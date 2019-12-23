@@ -2,9 +2,5 @@
 #![feature(plugin)]
 #![plugin(minimal_lint)]
 
+#[allow(dead_code)]
 fn lintme() {}
-
-#[test]
-fn test() {
-    lintme()
-}

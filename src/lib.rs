@@ -11,9 +11,13 @@ extern crate rustc;
 #[macro_use]
 extern crate rustc_session;
 extern crate rustc_driver;
+extern crate rustc_errors;
+
 use rustc::lint::{EarlyContext, EarlyLintPass, LintArray, LintContext, LintPass};
 use rustc_driver::plugin::Registry;
+use rustc_errors::Applicability;
 use syntax::ast;
+
 declare_lint!(TEST_LINT, Warn, "Warn about items named 'lintme'");
 
 declare_lint_pass!(Pass => [TEST_LINT]);
@@ -21,7 +25,15 @@ declare_lint_pass!(Pass => [TEST_LINT]);
 impl EarlyLintPass for Pass {
     fn check_item(&mut self, cx: &EarlyContext, it: &ast::Item) {
         if it.ident.name.as_str() == "lintme" {
-            cx.span_lint(TEST_LINT, it.span, "item is named 'lintme'");
+            let mut diag = cx.struct_span_lint(TEST_LINT, it.span, "item is named 'lintme'");
+            let span = it.ident.span;
+            diag.span_suggestion(
+                span,
+                "you can rename it",
+                "lintyou".into(),
+                Applicability::MachineApplicable,
+            )
+            .emit()
         }
     }
 }

@@ -28,3 +28,10 @@ warning: item is named 'lintme'
 
 ```
 
+
+you can fix it wih `cargo fix`
+
+
+```console
+$ cargo fix
+```
